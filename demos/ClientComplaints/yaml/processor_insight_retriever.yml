@@ -1,0 +1,15 @@
+name: cortex/cc-insight-retriever
+title: Customer Complaints Retriever
+description: The processor retrieves the generated insights for the trader.
+inputs:
+  -
+    name: text
+    typeName: cortex/Text
+    routing:
+        all:
+            functionID: cortex/taai_function_insight_retriever
+            output: retrievedInsights
+outputs:
+  -
+    name: retrievedInsights
+    typeName: cortex/Text

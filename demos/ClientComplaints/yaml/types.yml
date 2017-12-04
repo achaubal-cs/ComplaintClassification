@@ -1,0 +1,33 @@
+types:
+  - name: cortex/Text
+    title: Text
+    description: Represents plain text.
+    fields: 
+      - name: text
+        dataType: String
+  - name: cortex/TextWithLanguage
+    title: Text with Language Classification
+    description: Represents plain text that includes a language code.
+    fields:
+      - name: text
+        dataType: String
+      - name: language
+        dataType: String
+      - name: confidence
+        dataType: Double
+  - name: cortex/TextWithSentiment
+    title: Text With Sentiment Analysis
+    description: Represents plain text that includes Sentiment Analysis
+    fields:
+      - name: text
+        dataType: String
+      - name: polarity
+        dataType: Float
+      - name: polarity_label
+        dataType: String
+      - name: subjectivity
+        dataType: Float
+      - name: subjectivity_label
+        dataType: String
+      - name: sentence_count
+        dataType: Integer

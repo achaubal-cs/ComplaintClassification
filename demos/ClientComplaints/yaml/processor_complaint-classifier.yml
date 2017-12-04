@@ -1,0 +1,25 @@
+name: cortex/cc-complaint-classifier
+title: Complaint classifier
+description: This processor will classify customer complaints.
+inputs:
+  -
+    name: text
+    typeName: cortex/Text
+    routing:
+        all:
+            functionID: cortex/cc_function_complaint_classifier
+            output: classifiedComplaint
+outputs:
+  -
+    name: classifiedComplaint
+    typeName: cortex/Text
+properties:
+  -
+    name: algo
+    title: Algorithm
+    description: Algorithm to classify complaints
+    required: true
+    type: Enum
+    defaultValue: Multilabel Classifier w/ Neural Net
+    validValues:
+      - Multilabel Classifier with Neural Net

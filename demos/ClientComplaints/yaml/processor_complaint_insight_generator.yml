@@ -1,0 +1,16 @@
+name: cortex/cc-complaint-insights-generator
+title: Complaint Insight Generator
+description: This processor is capable for generating complaint insights.
+inputs:
+  -
+    name: text
+    typeName: cortex/Text
+    routing:
+        all:
+            functionID: cortex/cc_function_complaint_insights_generator
+            output: insight
+outputs:
+  -
+    name: insight
+    typeName: cortex/Text
+properties:

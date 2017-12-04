@@ -1,0 +1,28 @@
+name: client-complaints-agent
+title: Client Complaints Agent
+description: Agent to intercept and classify customer complaints early in the process before it even goes to internal audit.
+inputs:
+  -
+    name: input
+    signalType: Service
+    typeName: cortex/Text
+    requestType: POST
+    asynchronous: false
+    output: output
+outputs:
+  -
+    name: output
+    signalType: Service
+    typeName: cortex/Text
+    requestType: GET
+    asynchronous: false
+processors:
+  -
+    processorName: cortex/cc-complaint-classifier
+    title: Complaint Classifier
+  -
+    processorName: cortex/cc-complaint-insights-generator
+    title: Complaint Insight Generator
+  -
+    processorName: cortex/cc-insight-retriever
+    title: Customer Complaints Retriever
