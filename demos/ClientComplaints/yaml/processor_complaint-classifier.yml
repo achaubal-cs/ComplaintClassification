@@ -1,18 +1,29 @@
-name: cortex/cc-complaint-classifier
-title: Complaint classifier
-description: This processor will classify customer complaints.
+name: cortex/text-classifier
+title: Classify Text
+description: tbd
 inputs:
   -
-    name: text
-    typeName: cortex/Text
+    name: train
+    typeName: cortex/TextClassifierTrainData
     routing:
-        all:
-            functionID: cortex/cc_function_complaint_classifier
-            output: classifiedComplaint
+      all:
+        functionID: cortex/text_classifier_train
+        output: trainReport
+  -
+    name: predict
+    typeName: cortex/TextClassifierRequest
+    routing:
+      all:
+        functionID: cortex/text_classify
+        output: predictions
 outputs:
   -
-    name: classifiedComplaint
-    typeName: cortex/Text
+    name: trainReport
+    title: Train Report
+    typeName: cortex/TrainingReport
+  -
+    name: predictions
+    typeName: cortex/TextClassifierResult
 properties:
   -
     name: algo

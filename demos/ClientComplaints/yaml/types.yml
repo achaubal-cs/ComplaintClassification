@@ -4,7 +4,7 @@ types:
     description: Represents plain text.
     fields: 
       - name: text
-        dataType: String
+        dataType: String  
   - name: cortex/TextWithLanguage
     title: Text with Language Classification
     description: Represents plain text that includes a language code.
@@ -31,3 +31,55 @@ types:
         dataType: String
       - name: sentence_count
         dataType: Integer
+  - name: cortex/TextDocument
+    title: Text Document
+    description: Represents a document that contains a title, text, and timestamp.
+    fields:
+      - name: title
+        dataType: String
+      - name: text
+        dataType: String
+      - name: timestamp
+        dataType: Long
+  - name: cortex/UserItem
+    title: User Item
+    description: Represents a reference to a specific user and item combination.
+    fields:
+      - name: uid
+        dataType: Integer
+      - name: iid
+        dataType: Integer
+  - name: cortex/UserItemRating
+    title: User Item Rating
+    description: Represents a reference to a specific user and item combination alogn with the user rating of the item.
+    fields:
+      - name: uid
+        dataType: Integer
+      - name: iid
+        dataType: Integer
+      - name: rating
+        dataType: Float
+      - name: timestamp
+        dataType: Long
+  - name: cortex/TextClassifierTrainData
+    title: Text Classification Training Data
+    description: Training data for text classification
+    fields:
+      - name: text
+        dataType: String
+      - name: label
+        dataType: String
+  - name: cortex/TextClassifierRequest
+    title: Text Classification Request
+    description: Request to classify text
+    fields:
+      - name: text
+        dataType: String
+  - name: cortex/TextClassifierResult
+    title: Text Classification Result
+    description: Classified text, including evidence
+    fields:
+      - name: text
+        dataType: String
+      - name: evidence
+        dataType: String

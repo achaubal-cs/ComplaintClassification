@@ -1,13 +1,13 @@
 SHELL=/bin/bash
 THIS_DIR=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-TENANT=ccaiorg
-#HOST=api.cortex-dev.insights.ai
-HOST=localhost:8000
-URL=http://${HOST}
+TENANT=ccorg
+HOST=api.cortex-dev.insights.ai
+#HOST=localhost:8000
+URL=https://${HOST}
 ENVID=5a1f0a1b7c2e240001142805
 KEY=cc-data/json1234
 # accounts/admin/authenticate
-TMP:=$(shell curl -s -X POST ${URL}/v2/admin/${TENANT}/users/authenticate -H 'content-type: application/json' -d '{"username": "ccaiuser1", "password": "secret"}')
+TMP:=$(shell curl -s -X POST ${URL}/v2/admin/${TENANT}/users/authenticate -H 'content-type: application/json' -d '{"username": "ccuser1", "password": "secret"}')
 AUTH_OUT='$(TMP)'
 JWT=$(shell echo $(AUTH_OUT) | jq .jwt | tr -d '"')
 
@@ -15,13 +15,19 @@ print-%  : ; @echo $* = $($*)
 	
 # admin/{tenantId}/users/register
 tenant.register:
-	curl -s -X POST ${URL}/v2/admin/tenants/register -H 'content-type: application/json' -d '{"website":"website", "name": "Client Complaints Org", "tenantId": "${TENANT}", "email": "admin@ccai.org", "first":"firstname", "last":"lastname", "phone":"111-111-1111", "address":"this street", "admin":"ccadmin", "password":"secret"}' | jq .
+	curl -s -X POST ${URL}/v2/admin/tenants/register -H 'content-type: application/json' -d '{"website":"website", "name": "Client Complaints Org", "tenantId": "${TENANT}", "email": "admin@cc.org", "first":"firstname", "last":"lastname", "phone":"111-111-1111", "address":"this street", "admin":"ccadmin", "password":"secret"}' | jq .
 	sleep 10
 	
 user.register:
-	curl -s -X POST ${URL}/v2/admin/${TENANT}/users/register -H 'content-type: application/json' -d '{"email": "ccaiuser1@ccai.org", "first": "first", "last": "last", "password": "secret"}' | jq .
+	curl -s -X POST ${URL}/v2/admin/${TENANT}/users/register -H 'content-type: application/json' -d '{"email": "ccuser1@cc.org", "first": "first", "last": "last", "password": "secret"}' | jq .
 	sleep 10
-	
+
+catalog.saveTypes:
+	curl -s -X POST ${URL}/v2/catalog/types -H "authorization: Bearer ${JWT}" -H 'content-type: text/yaml' --data-binary "@${THIS_DIR}/../demos/ClientComplaints/yaml/types.yml" | jq .
+
+catalog.getTypes:
+	curl -s -X GET ${URL}/v2/catalog/types -H "authorization: Bearer ${JWT}" -H 'content-type: text/yaml' | jq .
+
 catalog.createAgent:
 	# curl -s -X POST ${URL}/v2/catalog/agents -H "authorization: Bearer ${JWT}" -H 'content-type: text/yaml' --data-binary "@${THIS_DIR}/../../demos/Trading-Assistant/yaml/Po1BuilderAgent.yml" | jq .
 	curl -s -X POST ${URL}/v2/catalog/agents -H "authorization: Bearer ${JWT}" -H 'content-type: text/yaml' --data-binary "@${THIS_DIR}/../demos/ClientComplaints/yaml/ClientComplaintsAgent.yml" | jq .
@@ -29,9 +35,9 @@ catalog.createAgent:
 catalog.getAgent:
 	curl -s -X GET ${URL}/v2/catalog/agents/default/client-complaints-agent -H "authorization: Bearer ${JWT}" -H 'content-type: application/json' | jq .
 catalog.saveProcessor:
-	 curl -s -X POST ${URL}/v2/catalog/processors -H "authorization: Bearer ${JWT}" -H 'content-type: text/yaml' --data-binary "@${THIS_DIR}/../demos/ClientComplaints/yaml/processor_complaint_insight_generator.yml" | jq .
+	 # curl -s -X POST ${URL}/v2/catalog/processors -H "authorization: Bearer ${JWT}" -H 'content-type: text/yaml' --data-binary "@${THIS_DIR}/../demos/ClientComplaints/yaml/processor_complaint_insight_generator.yml" | jq .
 	 curl -s -X POST ${URL}/v2/catalog/processors -H "authorization: Bearer ${JWT}" -H 'content-type: text/yaml' --data-binary "@${THIS_DIR}/../demos/ClientComplaints/yaml/processor_complaint-classifier.yml" | jq .
-	 curl -s -X POST ${URL}/v2/catalog/processors -H "authorization: Bearer ${JWT}" -H 'content-type: text/yaml' --data-binary "@${THIS_DIR}/../demos/ClientComplaints/yaml/processor_insight_retriever.yml" | jq .	 
+	 # curl -s -X POST ${URL}/v2/catalog/processors -H "authorization: Bearer ${JWT}" -H 'content-type: text/yaml' --data-binary "@${THIS_DIR}/../demos/ClientComplaints/yaml/processor_insight_retriever.yml" | jq .	 
 	 
 agent.createSnapshot:
 	curl -s -X POST ${URL}/v2/agents/snapshots -H "authorization: Bearer ${JWT}" -H 'content-type: application/json' -d '{"agentName": "client-complaints-agent", "tags": [ "test" ], "version": 1}' | jq .
@@ -60,7 +66,7 @@ catalog.bootstrap:
 create.exampleData:
 	mongo localhost:27017/example bootstrap_example_data.js
 	
-cc.bootstrap: tenant.register user.register catalog.bootstrap connections.bootstrap
+cc.bootstrap: tenant.register user.register catalog.bootstrap connections.bootstrap catalog.saveTypes
 
 cc.setup: catalog.saveProcessor catalog.createAgent
 
